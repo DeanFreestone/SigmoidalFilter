@@ -1,0 +1,260 @@
+%
+%  untitled
+%
+%  Created by Dean Freestone on 2012-10-09.
+%  Copyright (c) 2012 . All rights reserved.
+%
+\documentclass[]{article}
+
+% Use utf-8 encoding for foreign characters
+\usepackage[utf8]{inputenc}
+
+% Setup for fullpage use
+\usepackage{fullpage}
+
+% Uncomment some of the following if you use the features
+%
+% Running Headers and footers
+%\usepackage{fancyhdr}
+
+% Multipart figures
+%\usepackage{subfigure}
+
+% More symbols
+%\usepackage{amsmath}
+%\usepackage{amssymb}
+%\usepackage{latexsym}
+
+% Surround parts of graphics with box
+\usepackage{boxedminipage}
+
+% Package for including code in the document
+\usepackage{listings}
+
+% If you want to generate a toc for each chapter (use with book)
+\usepackage{minitoc}
+
+% This is now the recommended way for checking for PDFLaTeX:
+\usepackage{ifpdf}
+
+%\newif\ifpdf
+%\ifx\pdfoutput\undefined
+%\pdffalse % we are not running PDFLaTeX
+%\else
+%\pdfoutput=1 % we are running PDFLaTeX
+%\pdftrue
+%\fi
+
+\ifpdf
+\usepackage[pdftex]{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+\title{A New Kalman Filter for Sigmoidal Nonlinearities}
+\author{Dean R. Freestone, Parham Aram, David B. Grayden, Dragan Nesic, ....  }
+
+\date{2012-10-09}
+
+\begin{document}
+
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg, .tif}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+\maketitle
+
+
+\begin{abstract}
+\end{abstract}
+
+\section{Introduction}
+\subsection{Expected Value of a Gaussian Transformed by an Error Function Sigmoid}
+An alternate form of the sigmoid function than the one that is typically used is
+\begin{align}
+	g(v) &= \frac{1}{\sqrt{2\pi}\varsigma}\int_{-\infty}^{v}\exp\left(-\frac{(z-v_0)^2}{2\varsigma^2}\right)\,\mathrm{d}z \\
+	&= \frac{1}{2}\left(\mathrm{erf}\left(\frac{v-v_0}{\varsigma\sqrt{2}}\right) + 1\right).
+\end{align}
+\begin{figure}[ht!]
+	\centering
+		\includegraphics[scale=1]{./Figures/pdf/DifferentSigmoids.pdf}
+	\caption{caption}
+	\label{fig:label}
+\end{figure}
+
+Now we consider the mapping of the GRV (defined in equation~\ref{eq:Gaussian_pdf}) through this new sigmoid. In a similar vein as before, we will first consider a simple case where $v_0 = 0$ and $\varsigma = 1$. So we have
+\begin{align}
+	Y &= g(X) \\
+	&= \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{x}\exp\left(-\frac{z^2}{2}\right)\,\mathrm{d}z \\
+	&= \frac{1}{2}\left(\mathrm{erf}\left(\frac{x}{\sqrt{2}}\right) + 1\right)
+\end{align}
+and
+\begin{align}
+	f_Y(y) &= |h'(y)|f_X[h(y)] \\
+	&= \frac{h'(y)}{\sigma_x\sqrt{2\pi}}\exp\left(-\frac{(h(y)-\bar{x})^2}{2\sigma_x^2}\right)
+\end{align}
+where
+\begin{equation}
+	h(y) = g^{-1}(Y).
+\end{equation}
+As before, we have the expected value of the transformed Gaussian as
+\begin{align}
+	\mathbb{E}(y) &= \int_{-\infty}^{\infty}yf_Y(y) \,\mathrm{d}y \\
+	&=\int_{-\infty}^{\infty}\frac{y h'(y)}{\sigma_x\sqrt{2\pi}}\exp\left(-\frac{(h(y)-\bar{x})^2}{2\sigma_x^2}\right)\,\mathrm{d}y. \label{eq:expected_value_erf_sigmoid}
+\end{align}
+
+Now the papers by Brenden J. Frey (Variational inference for continuous sigmoidal Bayesian networks, 1999 and Variational learning in nonlinear Gaussian belief networks, Neural Computation 1999) provide a closed-form solution to the expectation. This solution is
+\begin{align}
+	\mathbb{E}(y) &= g\left(\frac{\bar{x}}{\sqrt{1+\sigma^2}}\right) \\
+	&= \frac{1}{2}\left(\mathrm{erf}\left(\frac{\bar{x}}{\sqrt{2}\sqrt{1+\sigma^2}}\right)+1\right).
+\end{align}
+This is shown in Figure~\ref{fig:MappingThroughERF}, where the a Monte-Carlo simulation was used to test the analytic result. The predicted expected value and the actual numerical expected value correspond nicely.
+\begin{figure}[!ht]
+	\centering
+		\includegraphics[scale=1]{./Figures/pdf/MappingThroughERF.pdf}
+	\caption{\textbf{Monte Carlo simulation result confirming the analytic solution.}}
+	\label{fig:MappingThroughERF}
+\end{figure}
+
+The derivation proceeds as follows. The expected value is defined by
+\begin{align}
+\mathbb{E}\left[y\right] =& \int_{-\infty}^{\infty}g(x)f_X(x)\,\mathrm{d}x \\
+	&=\frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}\int_{-\infty}^{x}\exp\left(-\frac{z^2}{2}\right)f_X(x)\,\mathrm{d}z\,\mathrm{d}x.
+\end{align}
+Now we can make the substitution $z=w-x$ to get $x$ out of the integral terminal giving
+\begin{align}
+\mathbb{E}\left[y\right] &=\frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty} \int_{-\infty}^{0} \exp\left(-\frac{\left(w-x\right)^2}{2}\right)f_X(x) \, \mathrm{d}w\,\mathrm{d}x.
+\end{align}
+The order of integration can be changed without changing the limits of integration giving
+\begin{align}
+\mathbb{E}\left[y\right]  &= \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{0} \int_{-\infty}^{\infty} \exp\left(-\frac{\left(w-x\right)^2}{2}\right)f_X(x) \, \mathrm{d}x\,\mathrm{d}w \\	
+&=\frac{1}{2\pi\sigma}\int_{-\infty}^{0}\int_{-\infty}^{\infty}\exp\left(-\frac{\left(w-x\right)^2}{2}\right)\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)\,\mathrm{d}x\,\mathrm{d}w \\
+&=\frac{1}{2\pi\sigma}\int_{-\infty}^{0}\int_{-\infty}^{\infty}\exp\left(-\frac{\left(w-x\right)^2}{2}-\frac{(x-\mu)^2}{2\sigma^2}\right)\,\mathrm{d}x\,\mathrm{d}w
+\end{align}
+\dean{From Wolfram Alpha, our target solution is
+\begin{equation}
+	\int_{-\infty}^{\infty}\exp\left(-\frac{\left(w-x\right)^2}{2}-\frac{(x-\mu)^2}{2\sigma^2}\right)\,\mathrm{d}x = \frac{\sqrt{2\pi}\sigma}{\sqrt{\sigma^2+1}}\exp\left(-\frac{\left(w-\mu\right)^2}{2\left(\sigma^2+1\right)}\right),
+\end{equation}
+which leads to 
+\begin{equation}
+	\mathbb{E}\left[y\right] = \frac{1}{2\pi}\frac{\sqrt{2\pi}}{\sqrt{\sigma^2+1}} \int_{-\infty}^{0}\exp\left(-\frac{\left(w-\mu\right)^2}{2\left(\sigma^2+1\right)}\right)
+\end{equation}}
+Now we need to integrate out $x$, so we collect all the $x$-related terms
+\begin{align}
+\mathbb{E}\left[y\right] &= \frac{1}{2\pi\sigma} \int_{-\infty}^{0} \int_{-\infty}^{\infty} \exp\left(-\frac{1}{2}\left(w^2-2wx+x^2\right)-\frac{1}{2\sigma^2}\left(x^2-2\mu x + \mu^2\right)\right) \,\mathrm{d}x \,\mathrm{d}w \\
+&=\frac{1}{2\pi\sigma}\int_{-\infty}^{0}\int_{-\infty}^{\infty}\exp\left(-\frac{1}{2\sigma^2}\left(\sigma^2w^2-\sigma^22wx+\sigma^2x^2 + x^2-2\mu x + \mu^2\right)\right)\,\mathrm{d}x\,\mathrm{d}w \\
+&=\frac{1}{2\pi\sigma}\int_{-\infty}^{0}\int_{-\infty}^{\infty}\exp\left(-\frac{1}{2\sigma^2}\left(\left(\sigma^2 +1\right)x^2 - 2\mu x - \sigma^22w x + \sigma^2w^2 +  \mu^2\right)\right)\,\mathrm{d}x\,\mathrm{d}w \\
+&=\frac{1}{2\pi\sigma}\int_{-\infty}^{0}\exp\left(-\frac{1}{2\sigma^2}\left(\sigma^2w^2 +  \mu^2\right)\right)\int_{-\infty}^{\infty}\exp\left(-\frac{\sigma^2 +1}{2\sigma^2}x^2 + \frac{\sigma^2w+\mu}{\sigma^2}x\right)\,\mathrm{d}x\,\mathrm{d}w \\
+\end{align}
+
+Now we integrate out $x$. Let
+\begin{align}
+	\int_{-\infty}^{\infty}\exp\left(-\frac{\sigma^2 +1}{2\sigma^2}x^2 + \frac{\sigma^2w+\mu}{\sigma^2}x\right)\,\mathrm{d}x =& \int_{-\infty}^{\infty}\exp\left(ax^2+bx\right)\,\mathrm{d}x \\
+	=& \int_{-\infty}^{\infty}\exp\left(a\left(x+\frac{b}{2a}\right)^2 + \frac{b^2}{4a} \right)\,\mathrm{d}x \\
+	=& \exp\left(- \frac{b^2}{4a}\right)\int_{-\infty}^{\infty}\exp\left(\frac{\left(x+\frac{b}{2a}\right)^2}{a^{-1}}  \right)\,\mathrm{d}x \\
+	=& \exp\left(- \frac{b^2}{4a}\right)\frac{1}{\sqrt{-a}}\int_{-\infty}^{\infty}\exp\left(-c^2\right)\,\mathrm{d}c \\
+	=& \frac{\sqrt{\pi}}{\sqrt{-a}}\exp\left(-\frac{b^2}{4a}\right),
+\end{align}
+where
+\begin{align}
+	a =& -\frac{\sigma^2 + 1}{2\sigma^2} \\
+	b =& \frac{\sigma^2w + \mu}{\sigma^2} \\
+	c =& \frac{x+\frac{b}{2a}}{\sqrt{-a^{-1}}} \\
+	\frac{\mathrm{d}c}{\mathrm{d}x} =& \frac{1}{\sqrt{-a^{-1}}} \\
+	\mathrm{d}x =& \mathrm{d}c \sqrt{-a^{-1}}.
+\end{align}
+Now substituting back to replace $a$ and $b$ we get
+\begin{align}
+	\frac{\sqrt{\pi}}{\sqrt{-a}}\exp\left(-\frac{b^2}{4a}\right) =& \frac{\sqrt{\pi}}{\sqrt{\frac{\sigma^2 + 1}{2\sigma^2}}}\exp\left(\frac{\left(\frac{\sigma^2w + \mu}{\sigma^2}\right)^2}{\frac{4(\sigma^2 + 1)}{2\sigma^2}}\right) \\
+	=& \frac{\sqrt{2\pi}\sigma}{\sqrt{\sigma^2 + 1}}\exp\left(\frac{\sigma^2}{2(\sigma^2 + 1)}\left(\frac{\sigma^2w + \mu}{\sigma^2}\right)^2\right) \\
+	=& \frac{\sqrt{2\pi}\sigma}{\sqrt{\sigma^2 + 1}}\exp\left(\frac{\left(\sigma^2w + \mu\right)^2}{2\sigma^2(\sigma^2 + 1)}\right) \\
+\end{align}
+Now putting it back together again \dean{(this agrees with Wolfram Alpha)} we get
+\begin{align}
+\mathbb{E}\left[y\right] &=\frac{1}{2\pi\sigma} \int_{-\infty}^{0} \exp\left(-\frac{1}{2\sigma^2} \left(\sigma^2w^2 +  \mu^2\right)\right)\frac{\sqrt{2\pi}\sigma}{\sqrt{\sigma^2+1}}\exp\left(\frac{\left(\mu + \sigma^2 w\right)^2}{2\sigma^2\left(\sigma^2 + 1\right)}\right) \,\mathrm{d}w \\
+&=\frac{1}{2\pi\sigma}\frac{\sqrt{2\pi}\sigma}{\sqrt{\sigma^2+1}}\int_{-\infty}^{0} \exp\left(-\frac{1}{2\sigma^2}\left(\sigma^2w^2 +  \mu^2\right)\right)\exp\left(\frac{\left(\mu + \sigma^2w\right)^2}{2\sigma^2\left(\sigma^2+1\right)}\right) \,\mathrm{d}w \\
+&=\frac{1}{2\pi}\frac{\sqrt{2\pi}}{\sqrt{\sigma^2+1}}\int_{-\infty}^{0} \exp\left(-\frac{\left(\sigma^2+1\right)\left(\sigma^2w^2 +  \mu^2\right)}{2\sigma^2\left(\sigma^2+1\right)}+\frac{\left(\mu+\sigma^2w\right)^2}{2\sigma^2\left(\sigma^2+1\right)}\right) \,\mathrm{d}w 
+\end{align}
+Now we will attempt to expand and simplify the exponent
+\begin{align}
+	-\frac{\left(\sigma^2+1\right)\left(\sigma^2w^2 +  \mu^2\right)}{2\sigma^2\left(\sigma^2+1\right)}+\frac{\left(\mu-\sigma^2w\right)^2}{2\sigma^2\left(\sigma^2+1\right)} =& -\frac{1}{2\sigma^2\left(\sigma^2+1\right)}\left(\left(\sigma^2+1\right)\left(\sigma^2w^2 +  \mu^2\right) - \left(\mu+\sigma^2w\right)^2\right) \\
+	&= -\frac{1}{2\sigma^2\left(\sigma^2+1\right)}\left(\sigma^4w^2 + \sigma^2\mu^2 + \sigma^2w^2 + \mu^2 - \left(\mu^2 + 2\mu\sigma^2w + \sigma^4w^2\right)\right) \\
+	&= -\frac{1}{2\sigma^2\left(\sigma^2+1\right)}\left(\sigma^2\mu^2 + \sigma^2w^2 - 2\mu\sigma^2w\right) \\
+	&= -\frac{1}{2\left(\sigma^2+1\right)}\left(\mu^2 + w^2 - 2\mu w\right) \\
+	&= -\frac{\left(w-\mu\right)^2}{2\left(\sigma^2+1\right)}
+\end{align}
+Now putting it back together we get \dean{(this agrees with Wolfram too!)}
+\begin{align}
+	\mathbb{E}\left[y\right] =& \frac{1}{2\pi}\frac{\sqrt{2\pi}}{\sqrt{\sigma^2+1}}\int_{-\infty}^{0} \exp\left(-\frac{\left(w-\mu\right)^2}{2\left(\sigma^2+1\right)}\right) \,\mathrm{d}w
+\end{align}
+Now let
+\begin{align}
+	z =& \frac{w-\mu}{\sqrt{\sigma^2+1}} \\
+	\frac{\mathrm{d}z}{\mathrm{d}w} =& \frac{1}{\sqrt{\sigma^2+1}} \\
+	\mathrm{d}w = \sqrt{\sigma^2+1}\mathrm{d}z,
+\end{align}
+giving
+\begin{align}
+	\mathbb{E}\left[y\right] =& \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\frac{\mu}{\sqrt{\sigma^2+1}}} \exp\left(-\frac{z^2}{2}\right) \,\mathrm{d}z \\
+	=& g\left(\frac{\mu}{\sqrt{\sigma^2+1}}\right),
+\end{align}
+as required.
+
+As mentioned above, the more general form of the error function sigmoid has slope (variance) and threshold (mean) parameters. This is
+\begin{equation}
+	g(v) = \frac{1}{2}\left(\mathrm{erf}\left(\frac{v-v_0}{\varsigma\sqrt{2}}\right) + 1\right).
+\end{equation} 
+It can easily be shown that the expected value of a Gaussian (the membrane voltage $v$) transformed by this guy is
+\begin{equation}
+	\mathbb{E}\left[g(v)\right] = \frac{1}{2} \left(\mathrm{erf}\left(\frac{\mu-v_0}{\sqrt{2\left(\varsigma^2+\sigma^2\right)}}\right) + 1\right).
+\end{equation}
+
+\subsection{The Variance}
+
+
+\subsubsection{Approximating the Error Function}
+
+Recall that
+\begin{align}
+	g(v) &= \frac{1}{\sqrt{2\pi}\varsigma}\int_{-\infty}^{v}\exp\left(-\frac{(z-v_0)^2}{2\varsigma^2}\right)\,\mathrm{d}z \\
+	&= \frac{1}{2}\left(\mathrm{erf}\left(\frac{v-v_0}{\varsigma\sqrt{2}}\right) + 1\right).
+\end{align}
+
+A recent paper has provided Chernoff-type upper and lower bounds on the Gaussian error function (Seok-Ho Chang et al. 2011 Chernoff)
+
+Now
+\begin{align}
+	g(v) \le& a_1\exp(-b_1z^2), \quad z-v_0<0 \\
+	\le& 1-a_2\exp(-b_2z^2), \quad z-v_0>0,
+\end{align}
+
+where
+\begin{align}
+	z =& \frac{v-v_0}{\varsigma} \\ 
+	a_1 =& 0.5 \\
+	b_1 =& 0.5 \\
+	a_2 =& \sqrt{\frac{2\mathrm{e}}{\pi}}\sqrt{\frac{b_2-1}{b_2}} \\
+	b_2 =& 1.08
+\end{align}
+
+\begin{align}
+	\mathbb{E}\left[y^2\right] \le& \frac{1}{\sqrt{2\pi}\sigma}\int_{-\infty}^{v_0} \left(a_1\exp\left(-b_1\frac{(x-v_0)^2}{\varsigma^2}\right)\right)^2 \exp\left(-\frac{\left(x-\mu\right)^2}{2\sigma^2}\right) \,\mathrm{d}x \\
+	+& \frac{1}{\sqrt{2\pi}\sigma}\int_{v_0}^{\infty} \left(1-a_2\exp\left(-b_2\frac{(x-v_0)^2}{\varsigma^2}\right)\right)^2 \exp\left(-\frac{\left(x-\mu\right)^2}{2\sigma^2}\right) \,\mathrm{d}x.
+\end{align}
+Now we need to integrate out $x$ to give our upper bound on the variance. Let's do the first term now
+\begin{align}
+	\frac{1}{\sqrt{2\pi}\sigma}\int_{-\infty}^{v_0} \left(a_1\exp\left(-b_1\frac{(x-v_0)^2}{\varsigma^2}\right)\right)^2 \exp\left(\frac{\left(x-\mu\right)^2}{2\sigma^2}\right) \,\mathrm{d}x =& \frac{a_1^2}{\sqrt{2\pi}\sigma}\int_{-\infty}^{v_0} \exp\left(-2b_1\frac{(x-v_0)^2}{\varsigma^2}\right) \exp\left(-\frac{\left(x-\mu\right)^2}{2\sigma^2}\right) \,\mathrm{d}x \\
+	=& \frac{1}{4\sqrt{2\pi}\sigma}\int_{-\infty}^{v_0} \exp\left(-\frac{(x-v_0)^2}{\varsigma^2}-\frac{\left(x-\mu\right)^2}{2\sigma^2}\right) \,\mathrm{d}x	
+\end{align}
+expand the brackets in the exponent giving
+\begin{align}
+	-\frac{(x-v_0)^2}{\varsigma^2}-\frac{\left(x-\mu\right)^2}{2\sigma^2} =&
+	-\frac{2\sigma^2(x-v_0)^2+\varsigma^2\left(x-\mu\right)^2}{2\sigma^2\varsigma^2} \\
+	=& -\frac{2\sigma^2(x^2-2x v_0 +v_0^2)+\varsigma^2\left(x^2 - 2\mu x + \mu^2\right)}{2\sigma^2\varsigma^2} \\
+	=& -\frac{(2\sigma^2+\varsigma^2)x^2 - (2\sigma^22v_0 + \varsigma^22\mu)x + 2\sigma^2 v_0^2 + \varsigma^2\mu^2}{2\sigma^2\varsigma^2} \\
+\end{align}
+
+\bibliographystyle{plain}
+\bibliography{}
+\end{document}
