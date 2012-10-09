@@ -356,6 +356,33 @@ An example of the model of a cortical column is shown in Figure~\ref{fig:JansenA
 	\caption{\textbf{Model of a Cortical Column.} The model shows three interconnected neural masses, which are pyramidal neurons, excitatory spiny stellate cells, and inhibitory interneurons. The specific subtype of neural population is defined by the parameters that describe the post-synaptic response kernels.}
 	\label{fig:JansenAndRit}
 \end{figure}
+
+\begin{align}
+	\mathrm{d}\,v_e(t) &= z_e(t)\,\mathrm{d}t \\
+	\mathrm{d}\,z_e(t) &= (\alpha_{pe}s\left(v_p(t)\right) - 2\zeta_{e}z_e(t) - \zeta_{e}^2v_e(t))\,\mathrm{d}t + \mathrm{d}\,w_e(t) \\
+	\mathrm{d}\,v_i(t) &= z_i(t)\,\mathrm{d}t \\
+	\mathrm{d}\,z_i(t) &= \left(\alpha_{pi}s\left(v_p(t)\right) - 2\zeta_{e}z_i(t) - \zeta_{e}^2v_i(t)\right)\,\mathrm{d}t + \mathrm{d}\,w_i(t)\\
+	\mathrm{d}\,v_{p1}(t) &= z_{p1}(t)\,\mathrm{d}t \\
+	\mathrm{d}\,z_{p1}(t) &= (\alpha_{ep}s\left(v_e(t)\right) - 2\zeta_{e}z_{p1}(t) - \zeta_{e}^2v_{p1}(t))\,\mathrm{d}t + \mathrm{d}\, w_{p1}(t)\\
+	\mathrm{d}\,v_{p2}(t) &= z_{p2}(t)\,\mathrm{d}t \\
+	\mathrm{d}\,z_{p2}(t) &= (\alpha_{ip}s\left(v_i(t)\right) - 2\zeta_{i}z_{p2}(t) - \zeta_{i}^2v_{p2}(t))\,\mathrm{d}t  + \mathrm{d}\, w_{p2}(t) \\
+	\mathrm{d}\,v_{p3}(t) &= z_{p3}(t)\,\mathrm{d}t \\
+	\mathrm{d}\,z_{p3}(t) &= (\alpha_{xp}\mu_x - 2\zeta_{e}z_{p3}(t) - \zeta_{e}^2v_{p3}(t))\,\mathrm{d}t + \mathrm{d}\,\alpha_{xp}w_x(t).
+\end{align}
+
+\begin{align}
+	v_e(t+\delta t) &= z_e(t)\,\delta t + v_e(t)\\
+	z_e(t+\delta t) &= (\alpha_{pe}s\left(v_p(t)\right) - 2\zeta_{e}z_e(t) - \zeta_{e}^2v_e(t))\,\delta t + z_e(t) + \varepsilon_e(t) \\
+	v_i(t+\delta t) &= z_i(t)\,\delta t + v_i(t)\\
+	z_i(t+\delta t) &= \left(\alpha_{pi}s\left(v_p(t)\right) - 2\zeta_{e}z_i(t) - \zeta_{e}^2v_i(t)\right)\,\delta t + z_i(t) + \varepsilon_i(t)\\
+	v_{p1}(t+\delta t) &= z_{p1}(t)\,\delta t + v_{p1}(t) \\
+	z_{p1}(t+\delta t) &= (\alpha_{ep}s\left(v_e(t)\right) - 2\zeta_{e}z_{p1}(t) - \zeta_{e}^2v_{p1}(t))\,\delta t + z_{p1}(t) + \varepsilon_{p1}(t)\\
+	v_{p2}(t+\delta t) &= z_{p2}(t)\,\delta t + v_{p2}(t) \\
+	z_{p2}(t+\delta t) &= (\alpha_{ip}s\left(v_i(t)\right) - 2\zeta_{i}z_{p2}(t) - \zeta_{i}^2v_{p2}(t))\,\delta t + z_{p2}(t) + \varepsilon_{p2}(t) \\
+	v_{p3}(t+\delta t) &= z_{p3}(t)\,\delta t + v_{p3}(t) \\
+	z_{p3}(t+\delta t) &= (\alpha_{xp}\mu_x - 2\zeta_{e}z_{p3}(t) - \zeta_{e}^2v_{p3}(t))\,\delta t + z_{p3}(t) + \varepsilon_x(t).
+\end{align}
+
 \bibliographystyle{plain}
 \bibliography{}
 \end{document}
