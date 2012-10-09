@@ -74,6 +74,11 @@
 
 \section{Introduction}
 \subsection{Expected Value of a Gaussian Transformed by an Error Function Sigmoid}
+Let's look at the transformation of a Gaussian random variable through a typical sigmoidal function. Let our Gaussian RV be described by the probability density function
+\begin{equation}\label{eq:Gaussian_pdf}
+	f_X(x) = \frac{1}{\sigma_x\sqrt{2\pi}}\exp\left(-\frac{(x-\bar{x})^2}{2\sigma_x^2}\right).
+\end{equation}
+
 An alternate form of the sigmoid function than the one that is typically used is
 \begin{align}
 	g(v) &= \frac{1}{\sqrt{2\pi}\varsigma}\int_{-\infty}^{v}\exp\left(-\frac{(z-v_0)^2}{2\varsigma^2}\right)\,\mathrm{d}z \\
@@ -224,7 +229,7 @@ Recall that
 	&= \frac{1}{2}\left(\mathrm{erf}\left(\frac{v-v_0}{\varsigma\sqrt{2}}\right) + 1\right).
 \end{align}
 
-A recent paper has provided Chernoff-type upper and lower bounds on the Gaussian error function (Seok-Ho Chang et al. 2011 Chernoff)
+A recent paper has provided Chernoff-type upper and lower bounds on the Gaussian error function (Seok-Ho Chang et al. 2011, IEEE Trans. on Comms., Chernoff-Type Bounds for the Gaussian Error Function)
 
 Now
 \begin{align}
@@ -258,6 +263,85 @@ expand the brackets in the exponent giving
 	=& -\frac{(2\sigma^2+\varsigma^2)x^2 - (2\sigma^22v_0 + \varsigma^22\mu)x + 2\sigma^2 v_0^2 + \varsigma^2\mu^2}{2\sigma^2\varsigma^2} \\
 \end{align}
 
+
+\section{A Simple Neural Mass}
+
+We begin by defining the post-synaptic potential of population $n$ as a result of an input firing rate from population $m$.
+\begin{align}
+	v_n(t) =& v_{r,n} + \int_{-\infty}^t \frac{\alpha_{mn}}{\tau_{mn}} h_{mn}(t-t')g_m(v_m(t')) \mathrm{d}t' \\
+	v_n(t) - v_{r,n} =& \int_{-\infty}^t \frac{\alpha_{mn}}{\tau_{mn}} h_{mn}(t-t')g_m(v_m(t')) \mathrm{d}t' \\
+	\tilde v_n(t) =& \int_{-\infty}^t \frac{\alpha_{mn}}{\tau_{mn}} h_{mn}(t-t')g_m(v_m(t')) \mathrm{d}t',
+\end{align}
+where $\alpha_{mn}$ is the gain for the post-synaptic response kernel, $h_{mn}(t)$ from neural population $m$ to $n$ and $\tau_{mn}$ is the time constant. Also, $g_m(v_m(t'))$ describes the input firing rate as a function of the pre-synaptic membrane potential. The resting membrane potential of the post-synaptic population is denoted by $v_{r,n}$, $v_n(t)$ is the post-synaptic membrane potential and $\tilde v_n(t)$ is the deviation of the membrane from the resting potential. The index $n$ (post-synaptic) may represent either the pyramidal ($p$), excitatory interneuron (spiny stellate) ($e$), inhibitory interneuron ($i$), fast inhibitory ($i1$) or slow inhibitory ($i2$) populations.  
+
+The form of $h_{mn}(t)$ is 
+\begin{equation}
+	h_{mn}(t) = \eta(t)t\exp\left(-\frac{t}{\tau_{mn}}\right)
+\end{equation}
+where $\eta(t)$ is the Heaviside step function.
+
+This convolution can conveniently be written as 
+\begin{equation}
+	\mathrm{D}\tilde v_n(t) = \frac{\alpha_{mn}}{\tau_{mn}} g_m(v_m(t')),
+\end{equation}
+where the linear differential operator, $\mathrm{D}$, is
+\begin{equation}
+	\mathrm{D} = \frac{\mathrm{d}^2}{\mathrm{d}t^2} + \frac{2}{\tau_{mn}}\frac{\mathrm{d}}{\mathrm{d}t} + \frac{1}{\tau_{mn}^2}
+\end{equation}
+
+This allows the dynamics of the neural mass to be described by the differential equation
+\begin{equation}
+	\frac{\mathrm{d}^2\tilde v_n(t)}{\mathrm{d}t^2} + \frac{2}{\tau_{mn}}\frac{\mathrm{d}\tilde v_n(t)}{\mathrm{d}t} + \frac{1}{\tau_{mn}^2}\tilde v_n(t) = \frac{\alpha_{mn}}{\tau_{mn}} g_m(v_m(t')).
+\end{equation}
+This second-order ODE can be written as two coupled first-order ODEs by defining
+\begin{equation}
+	z_n(t) = \frac{\mathrm{d}\tilde v_n(t)}{\mathrm{d}t}.
+\end{equation}
+This gives the system
+\begin{align}
+	\frac{\mathrm{d}\tilde v_n(t)}{\mathrm{d}t} =& z_n(t) \\
+	\frac{\mathrm{d}z_n(t)}{\mathrm{d}t} =& \frac{\alpha_{mn}}{\tau_{mn}} g_m(v_m(t')) - \frac{2}{\tau_{mn}}z_n(t) - \frac{1}{\tau_{mn}^2}\tilde v_n(t).
+\end{align}
+
+There is a sigmoidal relationship between the mean membrane potential and firing rate of each of the populations that is described by 
+\begin{align}
+	g\left(\tilde v_n(t)\right) =& \frac{1}{1+\exp{\left(\varsigma_n\left(v_{0n}-\tilde v_n(t)\right)\right)}} \\
+	g\left(\tilde v_n(t)\right) =& \frac{1}{1+\exp{\left(\varsigma_n\left(v_{0n}+v_{rn}-v_n(t)\right)\right)}} \\
+	g\left(v_n(t)\right) =& \frac{1}{1+\exp{\left(\varsigma_n\left(\tilde v_{0n}-v_n(t)\right)\right)}}
+\end{align}
+where $\tilde v_{0n} = v_{0n} + v_{rn}$. Note that in this formulation we are absorbing the maximal firing rate, which is typically a linear coefficient on the sigmoid, into the PSP gain ($\alpha_{mn}$). This removes redundant parameters that can not be recovered by estimation methods. The parameters $\varsigma_n$ and $v_{0n}$ describe the slope of the sigmoid (variance of firing thresholds within the populations) and the mean firing threshold, respectively. The parameter $\tilde v_{0n}$ describes the deviation from the resting membrane potential, which becomes our lumped threshold parameter. For ease of notation we can drop the \emph{tilde} remembering the resting membrane potential resides within this parameter / variable. Figure~\ref{fig:StandardNeuralMass} depicts a standard neural mass.
+\begin{figure}[ht]
+	\centering
+		\includegraphics[scale=1]{./Figures/pdf/StandardNeuralMass.pdf}
+	\caption{\textbf{Graphical Representation of the Neural Mass Model.} The neural mass model converts an input firing rate to a mean post-synaptic potential by a convolution with the post-synaptic response kernel. The membrane potential is converted to output firing rate by the sigmoidal activation function.} 
+
+Since this model can be considered a statistical approximation to the actual brain dynamics we allow for model error and unmodelled inputs to be incorporated through the disturbance term $e_n(t)$ giving
+\begin{align}
+	\mathrm{d}\, v_n(t) =& z_n(t)\,\mathrm{d}t \\
+	\mathrm{d}\, z_n(t) =& \alpha_{mn}\zeta_{mn} g_m(v_m(t)) - 2\zeta_{mn}z_n(t) - \zeta^2_{mn} v_n(t)\,\mathrm{d}t + \mathrm{d}\,w_n(t),
+\end{align}
+where $\zeta_{mn}$ is the reciprocal of the synaptic time constant and $w_n(t)$ is a Wiener process that is independent of $v_n(t)$ and $w_n(t) - w_n(0) \sim \mathcal{N}(0,t)$. Note that we have switched notation using Ito's notation.
+
+
+	\label{fig:StandardNeuralMass}
+\end{figure}
+
+\section{Discretisation}
+Next we need a discrete time version of the neural mass model in order to be able to apply the estimation methods. Let the time step be denoted by $\delta t$. The discretisation is performed using the Euler-Maruyama method by
+\begin{align}
+	v_n(t+\delta t) = & z_n(t)\,\delta t + v_n(t) \\
+	z_n(t+\delta t) =& \left(\alpha_{mn}\zeta_{mn} g_m(v_m(t)) - 2\zeta_{mn}z_n(t) - \zeta^2_{mn} v_n(t)\right)\,\delta t + z_n(t) + e_n(t),
+\end{align}
+where $e_n(t) = w_n(t + \delta t) - w_n(t) \sim \mathcal{N}(0,\delta t \,\sigma_n^2)$.
+
+\section{Jansen and Rit}
+An example of the model of a cortical column is shown in Figure~\ref{fig:JansenAndRit}.
+\begin{figure}[ht]
+	\centering
+		\includegraphics[scale=1]{./Figures/pdf/JansenAndRit.pdf}
+	\caption{\textbf{Model of a Cortical Column.} The model shows three interconnected neural masses, which are pyramidal neurons, excitatory spiny stellate cells, and inhibitory interneurons. The specific subtype of neural population is defined by the parameters that describe the post-synaptic response kernels.}
+	\label{fig:JansenAndRit}
+\end{figure}
 \bibliographystyle{plain}
 \bibliography{}
 \end{document}
