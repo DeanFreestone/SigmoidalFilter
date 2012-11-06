@@ -383,6 +383,19 @@ An example of the model of a cortical column is shown in Figure~\ref{fig:JansenA
 	z_{p3}(t+\delta t) &= (\alpha_{xp}\mu_x - 2\zeta_{e}z_{p3}(t) - \zeta_{e}^2v_{p3}(t))\,\delta t + z_{p3}(t) + \varepsilon_x(t).
 \end{align}
 
+The model can be written as
+\begin{align}
+	\mathbf{x}_{t+1} = \mathbf{A}\mathbf{x}_t + f(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t
+\end{align}
+Need to find
+\begin{align}
+	\left[\mathbf{A}\mathbf{x}_t + f(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t\right]\left[\mathbf{A}\mathbf{x}_t + f(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t\right]^{\top} &= \left(\mathbf{A}\mathbf{x}_t\right)\left(\mathbf{A}\mathbf{x}_t\right)^{\top} + \left(\mathbf{A}\mathbf{x}_t\right)f^{\top}(\mathbf{x}_t) + \left(\mathbf{A}\mathbf{x}_t\right)\boldsymbol{\varepsilon}^{\top}_t \\
+	&+ f(\mathbf{x}_t)\left(\mathbf{A}\mathbf{x}_t\right)^{\top} + f(\mathbf{x}_t)f^{\top}(\mathbf{x}_t) + f(\mathbf{x}_t)\boldsymbol{\varepsilon}^{\top}_t \\
+	&+ \boldsymbol{\varepsilon}_t\left(\mathbf{A}\mathbf{x}_t\right)^{\top} + \boldsymbol{\varepsilon}_tf^{\top}(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t\boldsymbol{\varepsilon}^{\top}_t \\
+	&= \left(\mathbf{A}\mathbf{x}_t\right)\left(\mathbf{A}\mathbf{x}_t\right)^{\top} + \left(\mathbf{A}\mathbf{x}_t\right)f^{\top}(\mathbf{x}_t) \\
+	&+ f(\mathbf{x}_t)\left(\mathbf{A}\mathbf{x}_t\right)^{\top} + f(\mathbf{x}_t)f^{\top}(\mathbf{x}_t) \\
+	&+ \boldsymbol{\varepsilon}_t\left(\mathbf{A}\mathbf{x}_t\right)^{\top} + \boldsymbol{\varepsilon}_tf^{\top}(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t\boldsymbol{\varepsilon}^{\top}_t
+\end{align}
 \bibliographystyle{plain}
 \bibliography{}
 \end{document}
