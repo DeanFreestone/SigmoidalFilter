@@ -389,7 +389,7 @@ The model can be written as
 \end{align}
 Need to find
 \begin{align}
-	\left[\mathbf{A}\mathbf{x}_t + f(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t\right]\left[\mathbf{A}\mathbf{x}_t + f(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t\right]^{\top} &= \left(\mathbf{A}\mathbf{x}_t\right)\left(\mathbf{A}\mathbf{x}_t\right)^{\top} + \left(\mathbf{A}\mathbf{x}_t\right)f^{\top}(\mathbf{x}_t) + \left(\mathbf{A}\mathbf{x}_t\right)\boldsymbol{\varepsilon}^{\top}_t \\
+	\left[\mathbf{A}\mathbf{x}_t + f(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t - \hat{\mathbf{x}}_{t+1}\right]\left[\mathbf{A}\mathbf{x}_t + f(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t - \hat{\mathbf{x}}_{t+1}\right]^{\top} &= \left(\mathbf{A}\mathbf{x}_t\right)\left(\mathbf{A}\mathbf{x}_t\right)^{\top} + \left(\mathbf{A}\mathbf{x}_t\right)f^{\top}(\mathbf{x}_t) + \left(\mathbf{A}\mathbf{x}_t\right)\boldsymbol{\varepsilon}^{\top}_t \\
 	&+ f(\mathbf{x}_t)\left(\mathbf{A}\mathbf{x}_t\right)^{\top} + f(\mathbf{x}_t)f^{\top}(\mathbf{x}_t) + f(\mathbf{x}_t)\boldsymbol{\varepsilon}^{\top}_t \\
 	&+ \boldsymbol{\varepsilon}_t\left(\mathbf{A}\mathbf{x}_t\right)^{\top} + \boldsymbol{\varepsilon}_tf^{\top}(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t\boldsymbol{\varepsilon}^{\top}_t \\
 	&= \left(\mathbf{A}\mathbf{x}_t\right)\left(\mathbf{A}\mathbf{x}_t\right)^{\top} + \left(\mathbf{A}\mathbf{x}_t\right)f^{\top}(\mathbf{x}_t) \\
