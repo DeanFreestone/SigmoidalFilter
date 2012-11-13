@@ -391,15 +391,15 @@ Need to find
 \begin{align}
 	\left[\mathbf{A}\mathbf{x}_t + f(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t - \hat{\mathbf{x}}_{t+1}\right]&\left[\mathbf{A}\mathbf{x}_t + f(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t - \hat{\mathbf{x}}_{t+1}\right]^{\top}\\ &= \left(\mathbf{A}\mathbf{x}_t\right)\left(\mathbf{A}\mathbf{x}_t\right)^{\top} \dean{+ \left(\mathbf{A}\mathbf{x}_t\right)f^{\top}(\mathbf{x}_t)} + \left(\mathbf{A}\mathbf{x}_t\right)\boldsymbol{\varepsilon}^{\top}_t - \left(\mathbf{A}\mathbf{x}_t\right) \hat{\mathbf{x}}_{t+1}^{\top} \\
 	&\dean{+ f(\mathbf{x}_t)\left(\mathbf{A}\mathbf{x}_t\right)^{\top} + f(\mathbf{x}_t)f^{\top}(\mathbf{x}_t) + f(\mathbf{x}_t)\boldsymbol{\varepsilon}^{\top}_t - f(\mathbf{x}_t)\hat{\mathbf{x}}_{t+1}^{\top}} \\
-	&+ \boldsymbol{\varepsilon}_t\left(\mathbf{A}\mathbf{x}_t\right)^{\top} + \boldsymbol{\varepsilon}_tf^{\top}(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t\boldsymbol{\varepsilon}^{\top}_t - \boldsymbol{\varepsilon}_t\hat{\mathbf{x}}_{t+1}^{\top} \\
-	&- \hat{\mathbf{x}}_{t+1}\left(\mathbf{A}\mathbf{x}_t\right)^{\top} - \hat{\mathbf{x}}_{t+1}f^{\top}(\mathbf{x}_t) - \hat{\mathbf{x}}_{t+1}\boldsymbol{\varepsilon}^{\top}_t + \hat{\mathbf{x}}_{t+1}\hat{\mathbf{x}}_{t+1}^{\top} 
+	&+ \boldsymbol{\varepsilon}_t\left(\mathbf{A}\mathbf{x}_t\right)^{\top} \dean{+ \boldsymbol{\varepsilon}_tf^{\top}(\mathbf{x}_t)} + \boldsymbol{\varepsilon}_t\boldsymbol{\varepsilon}^{\top}_t - \boldsymbol{\varepsilon}_t\hat{\mathbf{x}}_{t+1}^{\top} \\
+	&- \hat{\mathbf{x}}_{t+1}\left(\mathbf{A}\mathbf{x}_t\right)^{\top} \dean{- \hat{\mathbf{x}}_{t+1}f^{\top}(\mathbf{x}_t)} - \hat{\mathbf{x}}_{t+1}\boldsymbol{\varepsilon}^{\top}_t + \hat{\mathbf{x}}_{t+1}\hat{\mathbf{x}}_{t+1}^{\top} 
 \end{align}
 
-\begin{align}
-	&= \left(\mathbf{A}\mathbf{x}_t\right)\left(\mathbf{A}\mathbf{x}_t\right)^{\top} + \left(\mathbf{A}\mathbf{x}_t\right)f^{\top}(\mathbf{x}_t) \\
-	&+ f(\mathbf{x}_t)\left(\mathbf{A}\mathbf{x}_t\right)^{\top} + f(\mathbf{x}_t)f^{\top}(\mathbf{x}_t) \\
-	&+ \boldsymbol{\varepsilon}_t\left(\mathbf{A}\mathbf{x}_t\right)^{\top} + \boldsymbol{\varepsilon}_tf^{\top}(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t\boldsymbol{\varepsilon}^{\top}_t
-\end{align}
+% \begin{align}
+% 	&= \left(\mathbf{A}\mathbf{x}_t\right)\left(\mathbf{A}\mathbf{x}_t\right)^{\top} + \left(\mathbf{A}\mathbf{x}_t\right)f^{\top}(\mathbf{x}_t) \\
+% 	&+ f(\mathbf{x}_t)\left(\mathbf{A}\mathbf{x}_t\right)^{\top} + f(\mathbf{x}_t)f^{\top}(\mathbf{x}_t) \\
+% 	&+ \boldsymbol{\varepsilon}_t\left(\mathbf{A}\mathbf{x}_t\right)^{\top} + \boldsymbol{\varepsilon}_tf^{\top}(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t\boldsymbol{\varepsilon}^{\top}_t
+% \end{align}
 \bibliographystyle{plain}
 \bibliography{}
 \end{document}
