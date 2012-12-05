@@ -8,6 +8,7 @@
 
 \usepackage{color}                    % For creating coloured text and background
 \newcommand{\dean}[1]{\textcolor{green}{#1}}
+\newcommand{\parham}[1]{\textcolor{blue}{#1}}
 
 % Use utf-8 encoding for foreign characters
 \usepackage[utf8]{inputenc}
@@ -294,7 +295,7 @@ The form of $h_{mn}(t)$ is
 \end{equation}
 where $\eta(t)$ is the Heaviside step function.
 
-This convolution can conveniently be written as 
+This convolution can conveniently be written as\parham{why we have $t'$ in the following equation?} 
 \begin{equation}
 	\mathrm{D}\tilde v_n(t) = \frac{\alpha_{mn}}{\tau_{mn}} g_m(v_m(t')),
 \end{equation}
@@ -382,7 +383,20 @@ An example of the model of a cortical column is shown in Figure~\ref{fig:JansenA
 	v_{p3}(t+\delta t) &= z_{p3}(t)\,\delta t + v_{p3}(t) \\
 	z_{p3}(t+\delta t) &= (\alpha_{xp}\mu_x - 2\zeta_{e}z_{p3}(t) - \zeta_{e}^2v_{p3}(t))\,\delta t + z_{p3}(t) + \varepsilon_x(t).
 \end{align}
+ 
 
+\begin{align}
+	v_e^{t+1} &= z_e^{t}\,\delta t + v_e^{t}\\
+	z_e^{t+1} &= (\alpha_{pe}g\left(v_p^{t}\right) - 2\zeta_{e}z_e^{t} - \zeta_{e}^2v_e^{t})\,\delta t + z_e^{t} + \varepsilon_e^{t} \\
+	v_i^{t+1} &= z_i^{t}\,\delta t + v_i^{t}\\
+	z_i^{t+1} &= \left(\alpha_{pi}g\left(v_p^{t}\right) - 2\zeta_{e}z_i^{t} - \zeta_{e}^2v_i^{t}\right)\,\delta t + z_i^{t} + \varepsilon_i^{t}\\
+	v_{p1}^{t+1} &= z_{p1}^{t}\,\delta t + v_{p1}^{t} \\
+	z_{p1}^{t+1} &= (\alpha_{ep}g\left(v_e^{t}\right) - 2\zeta_{e}z_{p1}^{t}- \zeta_{e}^2v_{p1}^{t})\,\delta t + z_{p1}^{t} + \varepsilon_{p1}^{t}\\
+	v_{p2}^{t+1} &= z_{p2}^{t}\,\delta t + v_{p2}^{t} \\
+	z_{p2}^{t+1} &= (\alpha_{ip}g\left(v_i^{t}\right) - 2\zeta_{i}z_{p2}^{t} - \zeta_{i}^2v_{p2}^{t})\,\delta t + z_{p2}^{t} + \varepsilon_{p2}^{t} \\
+	v_{p3}^{t+1} &= z_{p3}^{t}\,\delta t + v_{p3}^{t} \\
+	z_{p3}^{t+1} &= (\alpha_{xp}\mu_x - 2\zeta_{e}z_{p3}^{t} - \zeta_{e}^2v_{p3}^{t})\,\delta t + z_{p3}^{t} + \varepsilon_x^{t}.
+\end{align}
 The model can be written as
 \begin{align}
 	\mathbf{x}_{t+1} = \mathbf{A}\mathbf{x}_t + f(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t
