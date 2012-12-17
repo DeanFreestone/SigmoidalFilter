@@ -396,11 +396,29 @@ An example of the model of a cortical column is shown in Figure~\ref{fig:JansenA
 	z_{p2}^{t+1} &= (\alpha_{ip}g\left(v_i^{t}\right) - 2\zeta_{i}z_{p2}^{t} - \zeta_{i}^2v_{p2}^{t})\,\delta t + z_{p2}^{t} + \varepsilon_{p2}^{t} \\
 	v_{p3}^{t+1} &= z_{p3}^{t}\,\delta t + v_{p3}^{t} \\
 	z_{p3}^{t+1} &= (\alpha_{xp}\mu_x - 2\zeta_{e}z_{p3}^{t} - \zeta_{e}^2v_{p3}^{t})\,\delta t + z_{p3}^{t} + \varepsilon_x^{t}.
-\end{align}
+\end{align} 
+The measured output (iEEG) is given by
+\begin{equation}
+ y^{t}=v_p^{t}+\epsilon^{t}
+\end{equation}
+where
+\begin{equation}
+ v_p^{t}=v_{p1}^{t}+v_{p2}^{t}-v_{p3}^{t}  
+	\end{equation}  
+and $\epsilon^{t}$ is the observation noise.
 The model can be written as
 \begin{align}
-	\mathbf{x}_{t+1} = \mathbf{A}\mathbf{x}_t + f(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t
-\end{align}
+	\mathbf{x}^{t+1} = \mathbf{A}\mathbf{x}^t + \mathbf{f}(\mathbf{x}^t) + \boldsymbol{\varepsilon}^t
+\end{align} 
+where $A=\bigoplus_{j=1}^5A_j$
+and
+\begin{equation}
+	A_j=\begin{bmatrix}1&\delta t\\-\zeta_j^2\delta t&1-2\zeta_j\delta t\end{bmatrix}
+\end{equation} 
+where $\zeta_j=\zeta_i~\text{if}~j=4$ and $\zeta_j=\zeta_e$ otherwise. The non-linearity $\mathbf f(\cdot)$ is defined as
+\begin{equation}
+ \mathbf{f}(\mathbf{x}^t)= \begin{bmatrix}0\\ \alpha_{pe}\delta t g\left(x_{5}^{t}+x_{7}^{t}-x_{9}^{t}\right)\\0\\\alpha_{pi}\delta t g\left(x_{5}^{t}+x_{7}^{t}-x_{9}^{t}\right)\\0\\\alpha_{ep}\delta t g\left(x_1^{t}\right)\\0\\\alpha_{ip}\delta t g\left(x_3^{t}\right)\\0\\0\end{bmatrix}
+\end{equation}
 Need to find
 \begin{align}
 	\left[\mathbf{A}\mathbf{x}_t + f(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t - \hat{\mathbf{x}}_{t+1}\right]&\left[\mathbf{A}\mathbf{x}_t + f(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t - \hat{\mathbf{x}}_{t+1}\right]^{\top}\\ &= \left(\mathbf{A}\mathbf{x}_t\right)\left(\mathbf{A}\mathbf{x}_t\right)^{\top} \dean{+ \left(\mathbf{A}\mathbf{x}_t\right)f^{\top}(\mathbf{x}_t)} + \left(\mathbf{A}\mathbf{x}_t\right)\boldsymbol{\varepsilon}^{\top}_t - \left(\mathbf{A}\mathbf{x}_t\right) \hat{\mathbf{x}}_{t+1}^{\top} \\
