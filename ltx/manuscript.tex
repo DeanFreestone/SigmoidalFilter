@@ -12,6 +12,7 @@
 
 % Use utf-8 encoding for foreign characters
 \usepackage[utf8]{inputenc}
+\usepackage{float}
 
 % Setup for fullpage use
 \usepackage{fullpage}
@@ -295,9 +296,9 @@ The form of $h_{mn}(t)$ is
 \end{equation}
 where $\eta(t)$ is the Heaviside step function.
 
-This convolution can conveniently be written as\parham{why we have $t'$ in the following equation?} 
+This convolution can conveniently be written as
 \begin{equation}
-	\mathrm{D}\tilde v_n(t) = \frac{\alpha_{mn}}{\tau_{mn}} g_m(v_m(t')),
+	\mathrm{D}\tilde v_n(t) = \frac{\alpha_{mn}}{\tau_{mn}} g_m(v_m(t)),
 \end{equation}
 where the linear differential operator, $\mathrm{D}$, is
 \begin{equation}
@@ -333,7 +334,7 @@ where $\tilde v_{0n} = v_{0n} + v_{rn}$. Note that in this formulation we are ab
 Since this model can be considered a statistical approximation to the actual brain dynamics we allow for model error and unmodelled inputs to be incorporated through the disturbance term $e_n(t)$ giving
 \begin{align}
 	\mathrm{d}\, v_n(t) =& z_n(t)\,\mathrm{d}t \\
-	\mathrm{d}\, z_n(t) =& \alpha_{mn}\zeta_{mn} g_m(v_m(t)) - 2\zeta_{mn}z_n(t) - \zeta^2_{mn} v_n(t)\,\mathrm{d}t + \mathrm{d}\,w_n(t),
+	\mathrm{d}\, z_n(t) =& \alpha_{mn}\zeta_{mn} g_m(v_m(t))\,\mathrm{d}t - 2\zeta_{mn}z_n(t)\,\mathrm{d}t - \zeta^2_{mn} v_n(t)\,\mathrm{d}t + \mathrm{d}\,w_n(t),
 \end{align}
 where $\zeta_{mn}$ is the reciprocal of the synaptic time constant and $w_n(t)$ is a Wiener process that is independent of $v_n(t)$ and $w_n(t) - w_n(0) \sim \mathcal{N}(0,t)$. Note that we have switched notation using Ito's notation.
 
@@ -418,7 +419,30 @@ and
 where $\zeta_j=\zeta_i~\text{if}~j=4$ and $\zeta_j=\zeta_e$ otherwise. The non-linearity $\mathbf f(\cdot)$ is defined as
 \begin{equation}
  \mathbf{f}(\mathbf{x}^t)= \begin{bmatrix}0\\ \alpha_{pe}\delta t g\left(x_{5}^{t}+x_{7}^{t}-x_{9}^{t}\right)\\0\\\alpha_{pi}\delta t g\left(x_{5}^{t}+x_{7}^{t}-x_{9}^{t}\right)\\0\\\alpha_{ep}\delta t g\left(x_1^{t}\right)\\0\\\alpha_{ip}\delta t g\left(x_3^{t}\right)\\0\\0\end{bmatrix}
-\end{equation}
+\end{equation}  
+
+\begin {table}
+\begin{center}
+\scalebox{1}{\begin{tabular}{lllc}
+\hline \hline
+Parameter &Description&Value&Relation to JR \\ \hline\\
+$\alpha_{pe}$&Average excitatory synaptic gain&2193.75~mVs$^{-1}$&$2e_0AC_1$\\
+$\alpha_{pi}$&Average inhibitory synaptic gain&548.4375~mVs$^{-1}$&$2e_0AC_3$  \\
+$\alpha_{ep}$&Average excitatory synaptic gain&1755.0~mVs$^{-1}$&$2e_0AC_2$\\
+$\alpha_{ip}$&Average inhibitory synaptic gain&3712.5~mVs$^{-1}$&$2e_0BC_4$\\
+$\alpha_{xp}$&Average synaptic input gain&16.25~mVs$^{-1}$&$2e_0A$\\ 
+$\zeta_e$&Average excitatory time constant&100~s$^{-1}$&$a$\\
+$\zeta_i$&Average inhibitory time constant&50~s$^{-1}$&$b$\\ 
+$v_0$&Mean firing threshold&6~mV&$v_0$\\
+$\varsigma$&Slope of the sigmoid&0.56~mV$^{-1}$spike~s$^{-1}$&$r$\\
+$\mu_x(t)$&Input&0&$p(t)$\\
+
+\hline \hline
+\end{tabular}}
+ \caption {{\bf Parameters of the model}.} 
+\label{table:MRA-ComputationalComplexity}
+\end{center}
+\end {table}
 Need to find
 \begin{align}
 	\left[\mathbf{A}\mathbf{x}_t + f(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t - \hat{\mathbf{x}}_{t+1}\right]&\left[\mathbf{A}\mathbf{x}_t + f(\mathbf{x}_t) + \boldsymbol{\varepsilon}_t - \hat{\mathbf{x}}_{t+1}\right]^{\top}\\ &= \left(\mathbf{A}\mathbf{x}_t\right)\left(\mathbf{A}\mathbf{x}_t\right)^{\top} \dean{+ \left(\mathbf{A}\mathbf{x}_t\right)f^{\top}(\mathbf{x}_t)} + \left(\mathbf{A}\mathbf{x}_t\right)\boldsymbol{\varepsilon}^{\top}_t - \left(\mathbf{A}\mathbf{x}_t\right) \hat{\mathbf{x}}_{t+1}^{\top} \\
