@@ -369,7 +369,7 @@ An example of the model of a cortical column is shown in Figure~\ref{fig:JansenA
 	\mathrm{d}\,v_{p2}(t) &= z_{p2}(t)\,\mathrm{d}t \\
 	\mathrm{d}\,z_{p2}(t) &= (\alpha_{ip}\zeta_{ip}g\left(v_i(t)\right) - 2\zeta_{i}z_{p2}(t) - \zeta_{i}^2v_{p2}(t))\,\mathrm{d}t  + \mathrm{d}\, w_{p2}(t) \\
 	\mathrm{d}\,v_{p3}(t) &= z_{p3}(t)\,\mathrm{d}t \\
-	\mathrm{d}\,z_{p3}(t) &= (\alpha_{xp}\zeta_{xp}\mu_x - 2\zeta_{e}z_{p3}(t) - \zeta_{e}^2v_{p3}(t))\,\mathrm{d}t + \mathrm{d}\,\alpha_{xp}w_x(t).
+	\mathrm{d}\,z_{p3}(t) &= (\alpha_{xp}\zeta_{xp}\mu_x(t) - 2\zeta_{e}z_{p3}(t) - \zeta_{e}^2v_{p3}(t))\,\mathrm{d}t + \mathrm{d}\,\alpha_{xp}w_x(t).
 \end{align}
 
 \begin{align}
@@ -382,22 +382,22 @@ An example of the model of a cortical column is shown in Figure~\ref{fig:JansenA
 	v_{p2}(t+\delta t) &= z_{p2}(t)\,\delta t + v_{p2}(t) \\
 	z_{p2}(t+\delta t) &= (\alpha_{ip}g\left(v_i(t)\right) - 2\zeta_{i}z_{p2}(t) - \zeta_{i}^2v_{p2}(t))\,\delta t + z_{p2}(t) + \varepsilon_{p2}(t) \\
 	v_{p3}(t+\delta t) &= z_{p3}(t)\,\delta t + v_{p3}(t) \\
-	z_{p3}(t+\delta t) &= (\alpha_{xp}\mu_x - 2\zeta_{e}z_{p3}(t) - \zeta_{e}^2v_{p3}(t))\,\delta t + z_{p3}(t) + \varepsilon_x(t).
+	z_{p3}(t+\delta t) &= (\alpha_{xp}\mu_x(t) - 2\zeta_{e}z_{p3}(t) - \zeta_{e}^2v_{p3}(t))\,\delta t + z_{p3}(t) + \varepsilon_x(t).
 \end{align}
  
 
-\begin{align}
-	v_e^{t+1} &= z_e^{t}\,\delta t + v_e^{t}\\
-	z_e^{t+1} &= (\alpha_{pe}g\left(v_p^{t}\right) - 2\zeta_{e}z_e^{t} - \zeta_{e}^2v_e^{t})\,\delta t + z_e^{t} + \varepsilon_e^{t} \\
-	v_i^{t+1} &= z_i^{t}\,\delta t + v_i^{t}\\
-	z_i^{t+1} &= \left(\alpha_{pi}g\left(v_p^{t}\right) - 2\zeta_{e}z_i^{t} - \zeta_{e}^2v_i^{t}\right)\,\delta t + z_i^{t} + \varepsilon_i^{t}\\
-	v_{p1}^{t+1} &= z_{p1}^{t}\,\delta t + v_{p1}^{t} \\
-	z_{p1}^{t+1} &= (\alpha_{ep}g\left(v_e^{t}\right) - 2\zeta_{e}z_{p1}^{t}- \zeta_{e}^2v_{p1}^{t})\,\delta t + z_{p1}^{t} + \varepsilon_{p1}^{t}\\
-	v_{p2}^{t+1} &= z_{p2}^{t}\,\delta t + v_{p2}^{t} \\
-	z_{p2}^{t+1} &= (\alpha_{ip}g\left(v_i^{t}\right) - 2\zeta_{i}z_{p2}^{t} - \zeta_{i}^2v_{p2}^{t})\,\delta t + z_{p2}^{t} + \varepsilon_{p2}^{t} \\
-	v_{p3}^{t+1} &= z_{p3}^{t}\,\delta t + v_{p3}^{t} \\
-	z_{p3}^{t+1} &= (\alpha_{xp}\mu_x - 2\zeta_{e}z_{p3}^{t} - \zeta_{e}^2v_{p3}^{t})\,\delta t + z_{p3}^{t} + \varepsilon_x^{t}.
-\end{align} 
+% \begin{align}
+% 	v_e^{t+1} &= z_e^{t}\,\delta t + v_e^{t}\\
+% 	z_e^{t+1} &= (\alpha_{pe}g\left(v_p^{t}\right) - 2\zeta_{e}z_e^{t} - \zeta_{e}^2v_e^{t})\,\delta t + z_e^{t} + \varepsilon_e^{t} \\
+% 	v_i^{t+1} &= z_i^{t}\,\delta t + v_i^{t}\\
+% 	z_i^{t+1} &= \left(\alpha_{pi}g\left(v_p^{t}\right) - 2\zeta_{e}z_i^{t} - \zeta_{e}^2v_i^{t}\right)\,\delta t + z_i^{t} + \varepsilon_i^{t}\\
+% 	v_{p1}^{t+1} &= z_{p1}^{t}\,\delta t + v_{p1}^{t} \\
+% 	z_{p1}^{t+1} &= (\alpha_{ep}g\left(v_e^{t}\right) - 2\zeta_{e}z_{p1}^{t}- \zeta_{e}^2v_{p1}^{t})\,\delta t + z_{p1}^{t} + \varepsilon_{p1}^{t}\\
+% 	v_{p2}^{t+1} &= z_{p2}^{t}\,\delta t + v_{p2}^{t} \\
+% 	z_{p2}^{t+1} &= (\alpha_{ip}g\left(v_i^{t}\right) - 2\zeta_{i}z_{p2}^{t} - \zeta_{i}^2v_{p2}^{t})\,\delta t + z_{p2}^{t} + \varepsilon_{p2}^{t} \\
+% 	v_{p3}^{t+1} &= z_{p3}^{t}\,\delta t + v_{p3}^{t} \\
+% 	z_{p3}^{t+1} &= (\alpha_{xp}\mu_x(t) - 2\zeta_{e}z_{p3}^{t} - \zeta_{e}^2v_{p3}^{t})\,\delta t + z_{p3}^{t} + \varepsilon_x^{t}.
+% \end{align}    
 The measured output (iEEG) is given by
 \begin{equation}
  y^{t}=v_p^{t}+\epsilon^{t}
@@ -409,7 +409,7 @@ where
 and $\epsilon^{t}$ is the observation noise.
 The model can be written in a compact form as
 \begin{align}
-	\mathbf{x}^{t+1} &= \mathbf{A}\mathbf{x}^t + \mathbf{f}(\mathbf{x}^t) + \boldsymbol{\varepsilon}^t\\
+	\mathbf{x}^{t+1} &= \mathbf{A}\mathbf{x}^t + \mathbf{f}(\mathbf{x}^t)+\mathbf{B}\mu_x(t) + \boldsymbol{\varepsilon}^t\\
 	y^{t}&=\mathbf C\mathbf{x}^{t}+\epsilon^{t} 	
 \end{align} 
 where $A=\bigoplus_{j=1}^5A_j$
@@ -421,7 +421,11 @@ and
  \begin{bmatrix}1&\delta t\\-\zeta_e^2\delta t&1-2\zeta_e\delta t\end{bmatrix}, & \mathrm{otherwise}
 	\end{cases}}		
 \end{equation} 
-The non-linearity $\mathbf f(\cdot)$ is defined as
+and
+\begin{equation}
+	\mathbf{B}=\begin{bmatrix}0&0&0&0&0&0&0&0&0&1\end{bmatrix}^{\top},
+	\end{equation} 
+where $\top$ denotes transpose operator. The non-linearity $\mathbf f(\cdot)$ is defined as
 \begin{equation}
  \mathbf{f}(\mathbf{x}^t)= \begin{bmatrix}0\\ \alpha_{pe}\delta t g\left(x_{5}^{t}+x_{7}^{t}-x_{9}^{t}\right)\\0\\\alpha_{pi}\delta t g\left(x_{5}^{t}+x_{7}^{t}-x_{9}^{t}\right)\\0\\\alpha_{ep}\delta t g\left(x_1^{t}\right)\\0\\\alpha_{ip}\delta t g\left(x_3^{t}\right)\\0\\0\end{bmatrix}
 \end{equation}  
