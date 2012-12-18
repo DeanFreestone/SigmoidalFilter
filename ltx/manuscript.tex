@@ -407,20 +407,28 @@ where
  v_p^{t}=v_{p1}^{t}+v_{p2}^{t}-v_{p3}^{t}  
 	\end{equation}  
 and $\epsilon^{t}$ is the observation noise.
-The model can be written as
+The model can be written in a compact form as
 \begin{align}
-	\mathbf{x}^{t+1} = \mathbf{A}\mathbf{x}^t + \mathbf{f}(\mathbf{x}^t) + \boldsymbol{\varepsilon}^t
+	\mathbf{x}^{t+1} &= \mathbf{A}\mathbf{x}^t + \mathbf{f}(\mathbf{x}^t) + \boldsymbol{\varepsilon}^t\\
+	y^{t}&=\mathbf C\mathbf{x}^{t}+\epsilon^{t} 	
 \end{align} 
 where $A=\bigoplus_{j=1}^5A_j$
 and
 \begin{equation}
-	A_j=\begin{bmatrix}1&\delta t\\-\zeta_j^2\delta t&1-2\zeta_j\delta t\end{bmatrix}
+	A_j=\small{
+	\begin{cases} 
+		\begin{bmatrix}1&\delta t\\-\zeta_i^2\delta t&1-2\zeta_i\delta t\end{bmatrix}, & j=4\\ \\
+ \begin{bmatrix}1&\delta t\\-\zeta_e^2\delta t&1-2\zeta_e\delta t\end{bmatrix}, & \mathrm{otherwise}
+	\end{cases}}		
 \end{equation} 
-where $\zeta_j=\zeta_i~\text{if}~j=4$ and $\zeta_j=\zeta_e$ otherwise. The non-linearity $\mathbf f(\cdot)$ is defined as
+The non-linearity $\mathbf f(\cdot)$ is defined as
 \begin{equation}
  \mathbf{f}(\mathbf{x}^t)= \begin{bmatrix}0\\ \alpha_{pe}\delta t g\left(x_{5}^{t}+x_{7}^{t}-x_{9}^{t}\right)\\0\\\alpha_{pi}\delta t g\left(x_{5}^{t}+x_{7}^{t}-x_{9}^{t}\right)\\0\\\alpha_{ep}\delta t g\left(x_1^{t}\right)\\0\\\alpha_{ip}\delta t g\left(x_3^{t}\right)\\0\\0\end{bmatrix}
 \end{equation}  
-
+The observation matrix $\mathbf C$, is given by
+\begin{equation}
+ \mathbf{C}=\begin{bmatrix}0&0&0&0&1&0&1&0&-1&0\end{bmatrix} 
+\end{equation}
 \begin {table}
 \begin{center}
 \scalebox{1}{\begin{tabular}{lllc}
@@ -436,7 +444,6 @@ $\zeta_i$&Average inhibitory time constant&50~s$^{-1}$&$b$\\
 $v_0$&Mean firing threshold&6~mV&$v_0$\\
 $\varsigma$&Slope of the sigmoid&0.56~mV$^{-1}$spike~s$^{-1}$&$r$\\
 $\mu_x(t)$&Input&0&$p(t)$\\
-
 \hline \hline
 \end{tabular}}
  \caption {{\bf Parameters of the model}.} 
