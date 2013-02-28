@@ -5,9 +5,11 @@ close all
 FS_Label = 8;
 FS_Tick = 8;
 
+%%
 % set the parameters for the sigmoid and the Gaussian RV
-mu_x = 2;         % mean of the Gaussian
-sigma_x = 4;       % standard deviation of the Gaussian
+mu_x = 0;         % mean of the Gaussian
+sigma_x = 9;       % standard deviation of the Gaussian
+%%
 
 varsigma = 0.56;    % slope parameter for the sigmoid
 v_0 = 0;                % threshold parameter for the sigmoid
@@ -22,15 +24,14 @@ g = 1./(1+exp(varsigma*(v_0 - x)));
 
 % create the Gaussian
 f_X_x = exp(-(x - mu_x).^2 / (2*sigma_x^2)) / (sigma_x * sqrt(2*pi));
-
-% create the transformed Gaussian
+% test = gaussmf(x,[sigma_x,mu_x]) / (sigma_x * sqrt(2*pi));
+% create the transformed Gaussian - analytically
 y = linspace(1e-10,1-1e-10,1e7);
 h_y = -(1/varsigma)*log((1./y) - 1) + v_0;
 h_dash_y = -1./(varsigma*y.*(y-1));
-f_Y_y =h_dash_y.* exp(-(h_y - mu_x).^2 / (2*sigma_x)) / (sigma_x*sqrt(2*pi));
+f_Y_y = 2* h_dash_y.* exp(-(h_y - mu_x).^2 / (2*sigma_x)) / (sigma_x*sqrt(2*pi));
 
 figure('color','white','units','centimeters','position',[2 2 9 9],'papersize',[9 9],'filename','Mapping.pdf')
-
 subplot(223)
 plot(x,g,'k')
 ylim([-0.2 1.2])
@@ -43,8 +44,9 @@ axis square
 
 subplot(221)
 plot(x,f_X_x,'k')
+
 ylabel('$f_X(x)$','fontsize',FS_Label,'interpreter','latex')
-set(gca,'fontsize',FS_Tick)
+set(gca,'fontsize',FS_Tick,'yticklabel',{})
 xlim([xmin xmax])
 box off
 axis square
@@ -53,9 +55,11 @@ subplot(224)
 plot(f_Y_y,y,'k')
 xlabel('$f_Y(y)$','fontsize',FS_Label,'interpreter','latex')
 ylim([-0.2 1.2])
-set(gca,'fontsize',FS_Tick)
+set(gca,'fontsize',FS_Tick,'xticklabel',{})
 box off
 axis square
+
+hold on
 
 %% check Taylor series for a single realisation
 
@@ -98,7 +102,7 @@ tilde_g2 = g_mu + g1*x_tilde + 0.5*g2*x_tilde.^2;
 % plot(x,g,x,tilde_g2)
 % ylim([-.5 1.5])
 
-%%
+%% Monte Carlo
 % check expectation
 NRealisations = 10000000;
 x = mu_x + sigma_x*randn(1,NRealisations);
@@ -141,28 +145,38 @@ disp(['The expected value from simple UT is ' num2str(E_X)])
 P_X = sum((g_X - E_X)*(g_X - E_X)') / (2*n);
 disp(['The covariance from simple UT is ' num2str(P_X)])
 
+
+%% create a Gaussian Approximation from the UT
+% create the Gaussian
+y2 = linspace(-1.2,1.2,1e7);
+f_Y_y_UT = exp(-(y2 - E_X).^2 / (2*P_X)) / (sqrt(P_X*2*pi));
+
+plot(f_Y_y_UT,y2,'r')
+
+leg = legend('Actual','UT Approx.');
+set(leg,'fontsize',FS_Label,'box','off','units','centimeters','position',[6,4,1,1])
 %% General Unscented transform
-kappa = 3-n;
-alpha = 10e-3;
-lambda = alpha^2*(n+kappa)-n;       % need to check this guy
-beta = 2;
-
-% create sigma points
-X = [mu_x mu_x + sqrt(n + lambda)*sigma_x, mu_x - sqrt(n + lambda)*sigma_x];
-
-% create the weights
-Wm = [lambda/(n+lambda) 1/(2*(n+lambda)) 1/(2*(n+lambda))];
-Wc = [lambda/(n+lambda)+(1-alpha^2+beta), 1/(2*(n+lambda)), 1/(2*(n+lambda))];
-
-% pass sigma points through nonlinearity
-g_X = 1./(1+exp(varsigma*(v_0 - X)));
-
-% approximate the mean
-E_WX = sum(Wm.*g_X);
-disp(['The expected value from generalised UT is ' num2str(E_WX)])
-
-% approximate the covariance
-P_WX = sum(Wc.*(g_X - E_WX)*(g_X - E_WX)');
-disp(['The covariance from generalised UT is ' num2str(P_WX)])
+% kappa = 3-n;
+% alpha = 10e-3;
+% lambda = alpha^2*(n+kappa)-n;       % need to check this guy
+% beta = 2;
+% 
+% % create sigma points
+% X = [mu_x mu_x + sqrt(n + lambda)*sigma_x, mu_x - sqrt(n + lambda)*sigma_x];
+% 
+% % create the weights
+% Wm = [lambda/(n+lambda) 1/(2*(n+lambda)) 1/(2*(n+lambda))];
+% Wc = [lambda/(n+lambda)+(1-alpha^2+beta), 1/(2*(n+lambda)), 1/(2*(n+lambda))];
+% 
+% % pass sigma points through nonlinearity
+% g_X = 1./(1+exp(varsigma*(v_0 - X)));
+% 
+% % approximate the mean
+% E_WX = sum(Wm.*g_X);
+% disp(['The expected value from generalised UT is ' num2str(E_WX)])
+% 
+% % approximate the covariance
+% P_WX = sum(Wc.*(g_X - E_WX)*(g_X - E_WX)');
+% disp(['The covariance from generalised UT is ' num2str(P_WX)])
 
 %%
